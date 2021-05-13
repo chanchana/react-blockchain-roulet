@@ -1,0 +1,33 @@
+.bhdLno {
+    margin: auto;
+}
+
+.MuiFormLabel-root {
+    /* margin: auto; */
+    margin-left: 10px;
+    margin-top: 6px;
+    color: grey !important;
+    /* margin-left: 129px; */
+    width: 100%;
+    /* margin: 0; */
+    /* padding: 0; */
+}
+
+.MuiInputBase-input {
+    text-align: center;
+    color: black !important;
+    font-weight: bold !important;
+}
+
+.MuiButton-contained.Mui-disabled {
+    color: rgb(107 107 107) !important;
+    box-shadow: none !important;
+    background-color: rgb(206 206 206) !important;
+}
+
+.MuiBadge-anchorOriginTopRightRectangle {
+    top: 18px !important;
+    right: 6px !important;
+    background-color: #ca7758 !important;
+}
+    
