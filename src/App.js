@@ -3,7 +3,7 @@ import './App.css';
 import web3 from './web3'
 import RouletContract from './roulet'
 import { useCallback, useEffect, useState } from 'react';
-import { NavBar, SpinBoard, Header } from './components'
+import { NavBar, SpinBoard, Header, SpinResult } from './components'
 import { CssBaseline } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
@@ -16,12 +16,13 @@ const theme = createMuiTheme({
 function App() {
   // const [manager, setManager] = useState()
   const [mustSpin, setMustSpin] = useState(false)
-  const [spinResult, setSpinResult] = useState(null)
+  const [spinResult, setSpinResult] = useState(10)
   const [tokenBalance, setTokenBalance] = useState()
   // const [buyAmount, setBuyAmount] = useState()
   // const [randomNumber, setRandomNumber] = useState()
   const [account, setAccount] = useState()
   const [betAmounts, setBetAmounts] = useState(() => [...[...Array(39).keys()].map(_ => 0)])
+  const [spinResultVisible, setSpinResultVisible] = useState(false)
   
   useEffect(() => {
     web3.eth.getAccounts().then((accounts) => {
@@ -65,8 +66,8 @@ function App() {
     setSpinResult(5)
     setMustSpin(true)
     setTimeout(() => {
-      alert('win prize: 5')
-    }, 13000)
+      setSpinResultVisible(true)
+    }, 11500)
   }
 
   // const handleRandom = () => {
@@ -93,15 +94,18 @@ function App() {
   // }
 
   const spinBoardProp = { tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin }
+  const spinResultProp = { spinResultVisible, setSpinResultVisible, spinResult }
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       {
-        account && <div>
-        <NavBar accountAddress={account}/>
-        <Header />
-        <SpinBoard {...spinBoardProp}/>
+        account && 
+        <div>
+          <NavBar accountAddress={account}/>
+          <Header />
+          <SpinBoard {...spinBoardProp} />
+          <SpinResult {...spinResultProp} />
         </div>
       }
     </ThemeProvider>
