@@ -13,67 +13,169 @@ const theme = createMuiTheme({
   },
 })
 
+const zeroData = () => [...[...Array(39).keys()].map(_ => 0)]
+
 function App() {
   const [mustSpin, setMustSpin] = useState(false)
-  const [spinResult, setSpinResult] = useState(10)
+  const [spinResult, setSpinResult] = useState(0)
+  const [reward, setReward] = useState(0)
   const [tokenBalance, setTokenBalance] = useState()
   const [account, setAccount] = useState()
-  const [betAmounts, setBetAmounts] = useState(() => [...[...Array(39).keys()].map(_ => 0)])
+  const [betAmounts, setBetAmounts] = useState(zeroData())
+  const [editingBetAmounts, setEditingBetAmounts] = useState(zeroData())
   const [spinResultVisible, setSpinResultVisible] = useState(false)
+  const [history, setHistory] = useState([])
   
   useEffect(() => {
     web3.eth.getAccounts().then((accounts) => {
       if (accounts.length > 0) {
         setAccount(accounts[0])
         console.log(`Current account: ${accounts[0]}`)
-        accountInit(accounts[0])
       } else {
         alert('Please login to MetaMask')
       }
     })
   }, [])
 
-  const handleAddBet = (number, amount) => {
+  useEffect(() => {
+    updateAccount()
+  }, [account])
+
+  const handleAddBet = async (number, amount) => {
     if (amount > tokenBalance) {
       alert('Insufficient token!')
       return false
     }
     console.log(`Add bet ${amount} for number ${number}`)
-    setTokenBalance(tokenBalance - amount)
-    return true
+    return RouletContract.methods.addBet(number, amount).send({from: account}).then((result) => {
+      console.log('addBet completed')
+      setTokenBalance(parseInt(tokenBalance) - parseInt(amount))
+      return true
+    }).catch((error) => {
+      console.log(error.message)
+      alert(error.message)
+      return false
+    })
   }
 
-  const handleRemoveBet = (number, amount) => {
+  const handleRemoveBet = async (number, amount) => {
     console.log(`Remove bet ${amount} for number ${number}`)
-    setTokenBalance(tokenBalance + amount)
-    return true
+    if (amount > betAmounts[number]) {
+      alert('Cannot remove more token!')
+      return false
+    }
+    return RouletContract.methods.removeBet(number, amount).send({from: account}).then((result) => {
+      console.log('removeBet completed')
+      setTokenBalance(parseInt(tokenBalance) + parseInt(amount))
+      return true
+    }).catch((error) => {
+      console.log(error.message)
+      alert(error.message)
+      return false
+    })
   }
 
-  const accountInit = () => {
+  const updateAccount = () => {
     updateTokenBalance()
+    updateBet()
+    updateHistory()
   }
 
   const updateTokenBalance = () => {
     RouletContract.methods.myToken().call({from: account}).then((result) => {
+      console.log('call myToken completed')
       setTokenBalance(result)
+    }).catch((error) => {
+      alert(error.message)
+    })
+  }
+
+  const updateBet = () => {
+    const userBet = Array(39)
+    for (let i = 0; i < 39; i++) {
+      RouletContract.methods.getMyBet(i).call({from: account}).then((result) => {
+        console.log('call getMyBet completed')
+        userBet[i] = parseInt(result)
+        if (i === 38) {
+          console.log(userBet)
+          setBetAmounts(userBet)
+          setEditingBetAmounts(userBet)
+        }
+      }).catch((error) => {
+        alert(error.message)
+      })
+    }
+  }
+
+  const updateHistory = () => {
+    getHistory().then(result => {
+      setHistory(result)
+    })
+  }
+
+  const getHistory = async () => {
+    return RouletContract.methods.getHistory().call({from: account}).then((result) => {
+      console.log('call getHistory completed')
+      console.log(result)
+      const lastestFirstHistory = result.map(number => parseInt(number)).reverse()
+      return lastestFirstHistory
+    }).catch((error) => {
+      alert(error.message)
     })
   }
 
   const spinAndShowResultWhenFinish = () => {
     setMustSpin(true)
     setTimeout(() => {
+      setBetAmounts(zeroData())
+      setEditingBetAmounts(zeroData())
       setSpinResultVisible(true)
+      updateHistory()
+      updateTokenBalance()
     }, 11500)
   }
 
-  const handleSpin = () => {
-    setSpinResult(5)
-    spinAndShowResultWhenFinish()
+  const getHistoryAndShowSpinResult = async () => {
+    getHistory().then(result => {
+      const targetNumber = result[0]
+      setSpinResult(targetNumber)
+      RouletContract.methods.getPlayerRewardHistory().call({from: account}).then((result) => {
+        console.log('call getPlayerRewardHistory completed')
+        console.log(result)
+        const lastestFirstReward = result.map(number => parseInt(number)).reverse()[0]
+        setReward(lastestFirstReward)
+        spinAndShowResultWhenFinish()
+      })
+    })
   }
 
-  const handleBuyToken = (value) => {
-    // TODO: connect with contract
-    setTokenBalance(parseInt(tokenBalance) + parseInt(value))
+  const handleSpin = () => {
+    RouletContract.methods.spin().send({from: account}).then((result) => {
+      console.log('spin completed')
+      getHistoryAndShowSpinResult()
+    }).catch((error) => {
+      alert(error.message)
+    })
+  }
+
+  const handleCheatSpin = (value) => {
+    RouletContract.methods.finish(parseInt(value)).send({from: account}).then((result) => {
+      console.log('finish completed')
+      getHistoryAndShowSpinResult()
+    }).catch((error) => {
+      alert(error.message)
+    })
+  }
+
+  const handleBuyToken = async (value) => {
+    RouletContract.methods.buyToken(value).send({from: account}).then((result) => {
+      console.log('buyToken completed')
+      updateTokenBalance()
+      setTokenBalance(parseInt(tokenBalance) + parseInt(value))
+    }).catch((error) => {
+      console.log(error.message)
+      alert(error.message)
+    })
   }
 
   const handleSellToken = (value) => {
@@ -85,11 +187,6 @@ function App() {
     }
   }
 
-  const handleCheatSpin = (value) => {
-    const target = parseInt(value)
-    setSpinResult(target)
-    spinAndShowResultWhenFinish()
-  }
 
   // const handleRandom = () => {
   //   console.log('rand')
@@ -114,8 +211,8 @@ function App() {
   //   setBuyAmount(e.target.value)
   // }
 
-  const spinBoardProp = { tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken }
-  const spinResultProp = { spinResultVisible, setSpinResultVisible, spinResult }
+  const spinBoardProp = { tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken, editingBetAmounts, setEditingBetAmounts, history }
+  const spinResultProp = { spinResultVisible, setSpinResultVisible, spinResult, reward }
 
   return (
     <ThemeProvider theme={theme}>

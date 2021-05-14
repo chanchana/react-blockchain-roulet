@@ -56,9 +56,8 @@ const popoverStyle = {
 }
 
 
-export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken }) => {
+export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken, editingBetAmounts, setEditingBetAmounts, history }) => {
   const [betPopoverOpens, setBetPopoverOpens] = useState(() => [...[...Array(39).keys()].map(_ => null)])
-  const [editingBetAmounts, setEditingBetAmounts] = useState(() => [...[...Array(39).keys()].map(_ => 0)])
 
   useEffect(() => {
     console.log(betPopoverOpens)
@@ -74,7 +73,7 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
     newState[index] = event.currentTarget
     // console.log(betPopoverOpens)
     setBetPopoverOpens(newState)
-    setEditingBetAmounts(betAmounts)
+    
   }
 
   const handleCloseBet = (index) => {
@@ -85,6 +84,7 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
     newState[index] = null
     // console.log(betPopoverOpens)
     setBetPopoverOpens(newState)
+    setEditingBetAmounts(betAmounts)
   }
 
   const handleChangeBetAmount = (event, index) => {
@@ -101,13 +101,17 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
 
   const handleConfirmAddRemoveBet = (index, changeValue) => {
     if (changeValue > 0) {
-      if (handleAddBet(index, changeValue)) {
-        setBetAmounts(editingBetAmounts)
-      }
+      handleAddBet(index, changeValue).then((isComplete) => {
+        if (isComplete) {
+          setBetAmounts(editingBetAmounts)
+        }
+      })
     } else if (changeValue < 0) {
-      if (handleRemoveBet(index, -changeValue)) {
-        setBetAmounts(editingBetAmounts)
-      }
+      handleRemoveBet(index, -changeValue).then((isComplete) => {
+        if (isComplete) {
+          setBetAmounts(editingBetAmounts)
+        }
+      })
     }
     
   }
@@ -132,7 +136,7 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
           <Paper>
             <Box padding="1rem">
               <Grid container>
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   <Box width="280px" margin="auto" padding="1rem">
                     <Grid container spacing={1}>
                       {/* <Grid item xs={4}>
@@ -145,7 +149,7 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
                         <Button variant="contained" color="primary" style={{width: "72px", background: Color.red}}>Even</Button>                
                       </Grid> */}
                     
-                      {betData.map(({ index, option, name, textColor, style }) => (
+                      {betAmounts && betData.map(({ index, option, name, textColor, style }) => (
                         <Grid item xs={4}>
                           <Badge color="primary" badgeContent={betAmounts[index]} invisible={betAmounts[index] === 0} style={{top: '18px', right: '6px'}}>
                             <Button onClick={(event) => {handleOpenBet(event, index)}} aria-describedby={`bet-button-${option}`} variant="contained" style={{width: "72px", color: textColor, fontWeight: 'bold', background: [0, oddPosition, evenPosition].includes(index) && style.backgroundColor}}>
@@ -173,7 +177,7 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
                     </Grid>
                   </Box>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   <Box padding="1rem">
                     <Paper style={{background: Color.paperGrey, padding: '1rem'}}>
                       Your Token
@@ -184,7 +188,7 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
                     <Paper style={{background: Color.paperGrey, padding: '1rem', marginTop: '1rem'}}>
                       Spin History
                       <Box marginTop="1rem">
-                        {[1, 7, 32, 0, 23,8,1, 7, 32, 0, 23,8,1, 7, 32, 0, 23, 32, 0, 23,8,1, 7, 32, 0, 23,8,1, 7, 32, 0, 23,8].map(number => (
+                        {history.map(number => (
                           <Box width="32px" height="32px" lineHeight="32px" borderRadius="4px" display="inline-block" margin="0 8px 8px 0" style={{textAlign: 'center', background: number === 0 ? Color.green : number % 2 === 0 ? Color.red : Color.black}}>{number}</Box>
                         ))}
                       </Box>

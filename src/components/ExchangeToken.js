@@ -199,7 +199,7 @@ export const ExchangeToken = ({ handleBuyToken, handleSellToken, tokenBalance })
           <Button onClick={handleClose} color="primary" style={{marginRight:'15px'}}>
             Cancel
           </Button>
-          <Button onClick={handleAction} variant="contained" color="primary">
+          <Button onClick={handleAction} disabled={value === 0} variant="contained" color="primary">
             {mode}
           </Button>
         </DialogActions>
