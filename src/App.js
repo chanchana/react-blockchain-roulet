@@ -1,8 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import web3 from './web3'
 import RouletContract from './roulet'
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavBar, SpinBoard, Header, SpinResult, InputGroup } from './components'
 import { CssBaseline } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
@@ -15,12 +14,9 @@ const theme = createMuiTheme({
 })
 
 function App() {
-  // const [manager, setManager] = useState()
   const [mustSpin, setMustSpin] = useState(false)
   const [spinResult, setSpinResult] = useState(10)
   const [tokenBalance, setTokenBalance] = useState()
-  // const [buyAmount, setBuyAmount] = useState()
-  // const [randomNumber, setRandomNumber] = useState()
   const [account, setAccount] = useState()
   const [betAmounts, setBetAmounts] = useState(() => [...[...Array(39).keys()].map(_ => 0)])
   const [spinResultVisible, setSpinResultVisible] = useState(false)
