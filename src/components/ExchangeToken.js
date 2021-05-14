@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import './style.css'
 
 const useStyles = makeStyles((theme) => ({
   root: {
