@@ -33,6 +33,17 @@
     background-color: #ca7758 !important;
 }
 
+.MuiDialog-paperWidthSm {
+    background: white !important; 
+}
+
+.MuiSelect-select{
+    background: lightsteelblue !important;
+}
+
+.MuiDialogActions-root{
+    padding: 13px !important;
+}
 .MuiInputBase-input.MuiFilledInput-input {
     color: white !important;
     text-align: start;
