@@ -1,7 +1,8 @@
 import { Grid, Paper, Box, Button, Popover, ButtonGroup, TextField, Badge } from '@material-ui/core'
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ExchangeToken } from './ExchangeToken'
 import { Wheel } from 'react-custom-roulette'
 
 const dataZero = [
@@ -55,7 +56,7 @@ const popoverStyle = {
 }
 
 
-export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin }) => {
+export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken }) => {
   const [betPopoverOpens, setBetPopoverOpens] = useState(() => [...[...Array(39).keys()].map(_ => null)])
   const [editingBetAmounts, setEditingBetAmounts] = useState(() => [...[...Array(39).keys()].map(_ => 0)])
 
@@ -111,7 +112,9 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
     
   }
 
-  const betChange = (index) => editingBetAmounts[index] - betAmounts[index]
+  const betChange = useCallback((index) => editingBetAmounts[index] - betAmounts[index], [editingBetAmounts, betAmounts])
+
+  const exchangeTokenProp = { handleBuyToken, handleSellToken, tokenBalance }
 
   return (
     <Box width="100%" padding="1rem" maxWidth="1400px" margin="0 auto">
@@ -174,7 +177,8 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
                   <Box padding="1rem">
                     <Paper style={{background: Color.paperGrey, padding: '1rem'}}>
                       Your Token
-                      <h1 style={{margin: '0'}}>{tokenBalance}</h1>
+                      <h1 style={{margin: '0 0 1rem'}}>{tokenBalance}</h1>
+                      <ExchangeToken {...exchangeTokenProp} />
                     </Paper>
 
                     <Paper style={{background: Color.paperGrey, padding: '1rem', marginTop: '1rem'}}>

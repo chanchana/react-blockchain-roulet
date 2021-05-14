@@ -80,6 +80,15 @@ function App() {
     setTokenBalance(parseInt(tokenBalance) + parseInt(value))
   }
 
+  const handleSellToken = (value) => {
+    if (value > tokenBalance) {
+      alert('Insufficient token!')
+      return false
+    } else {
+      setTokenBalance(parseInt(tokenBalance) - parseInt(value))
+    }
+  }
+
   const handleCheatSpin = (value) => {
     const target = parseInt(value)
     setSpinResult(target)
@@ -109,7 +118,7 @@ function App() {
   //   setBuyAmount(e.target.value)
   // }
 
-  const spinBoardProp = { tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin }
+  const spinBoardProp = { tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken }
   const spinResultProp = { spinResultVisible, setSpinResultVisible, spinResult }
 
   return (
