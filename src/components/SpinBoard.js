@@ -3,7 +3,6 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import { useEffect, useState } from 'react'
 import { Wheel } from 'react-custom-roulette'
-import './style.css'
 
 const dataZero = [
   { option: '0', style: { backgroundColor: '#4caf50', textColor: 'white' } },

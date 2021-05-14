@@ -3,9 +3,10 @@ import './App.css';
 import web3 from './web3'
 import RouletContract from './roulet'
 import { useCallback, useEffect, useState } from 'react';
-import { NavBar, SpinBoard, Header, SpinResult } from './components'
+import { NavBar, SpinBoard, Header, SpinResult, InputGroup } from './components'
 import { CssBaseline } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import './style.css'
 
 const theme = createMuiTheme({
   palette: {
@@ -62,12 +63,27 @@ function App() {
     })
   }
 
-  const handleSpin = () => {
-    setSpinResult(5)
+  const spinAndShowResultWhenFinish = () => {
     setMustSpin(true)
     setTimeout(() => {
       setSpinResultVisible(true)
     }, 11500)
+  }
+
+  const handleSpin = () => {
+    setSpinResult(5)
+    spinAndShowResultWhenFinish()
+  }
+
+  const handleBuyToken = (value) => {
+    // TODO: connect with contract
+    setTokenBalance(parseInt(tokenBalance) + parseInt(value))
+  }
+
+  const handleCheatSpin = (value) => {
+    const target = parseInt(value)
+    setSpinResult(target)
+    spinAndShowResultWhenFinish()
   }
 
   // const handleRandom = () => {
@@ -106,6 +122,8 @@ function App() {
           <Header />
           <SpinBoard {...spinBoardProp} />
           <SpinResult {...spinResultProp} />
+          <InputGroup label="Add token" buttonText="Add" onEnter={handleBuyToken}/>
+          <InputGroup label="Cheat spin" buttonText="Spin" onEnter={handleCheatSpin}/>
         </div>
       }
     </ThemeProvider>

@@ -13,6 +13,8 @@
     /* padding: 0; */
 }
 
+
+
 .MuiInputBase-input {
     text-align: center;
     color: black !important;
@@ -42,3 +44,8 @@
 .MuiDialogActions-root{
     padding: 13px !important;
 }
+.MuiInputBase-input.MuiFilledInput-input {
+    color: white !important;
+    text-align: start;
+}
+    
