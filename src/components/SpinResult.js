@@ -13,7 +13,7 @@ export const SpinResult = ({ spinResultVisible, setSpinResultVisible, spinResult
         <Box>Result</Box>
         <Box fontWeight="bold" fontSize="2rem">{spinResult}</Box>
         <Box marginTop="2rem">Your Prize</Box>
-        <Box fontWeight="bold" fontSize="2rem">{reward}</Box>
+        <Box fontWeight="bold" fontSize="2rem">{reward ?? '0'}</Box>
       </Box>
     </Dialog>
     {spinResultVisible && <Box position="fixed" top="0" left="0" zIndex="9000">
