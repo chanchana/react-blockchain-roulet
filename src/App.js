@@ -168,7 +168,10 @@ function App() {
   }
 
   const handleBuyToken = async (value) => {
-    RouletContract.methods.buyToken(value).send({from: account}).then((result) => {
+    RouletContract.methods.buyToken(value).send({
+      from: account,
+      value: web3.utils.toWei(value.toString(), 'ether'),
+    }).then((result) => {
       console.log('buyToken completed')
       updateTokenBalance()
       setTokenBalance(parseInt(tokenBalance) + parseInt(value))
@@ -183,7 +186,14 @@ function App() {
       alert('Insufficient token!')
       return false
     } else {
-      setTokenBalance(parseInt(tokenBalance) - parseInt(value))
+      RouletContract.methods.sellToken(value).send({from: account}).then((result) => {
+        console.log('sellToken completed')
+        updateTokenBalance()
+        setTokenBalance(parseInt(tokenBalance) - parseInt(value))
+      }).catch((error) => {
+        console.log(error.message)
+        alert(error.message)
+      })
     }
   }
 
