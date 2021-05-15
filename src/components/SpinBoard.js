@@ -189,7 +189,7 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
                       Spin History
                       <Box marginTop="1rem">
                         {history.map(number => (
-                          <Box width="32px" height="32px" lineHeight="32px" borderRadius="4px" display="inline-block" margin="0 8px 8px 0" style={{textAlign: 'center', background: number === 0 ? Color.green : number % 2 === 0 ? Color.red : Color.black}}>{number}</Box>
+                          <Box key={number.id} width="32px" height="32px" lineHeight="32px" borderRadius="4px" display="inline-block" margin="0 8px 8px 0" style={{textAlign: 'center', background: number === 0 ? Color.green : number % 2 === 0 ? Color.red : Color.black}}>{number}</Box>
                         ))}
                       </Box>
                     </Paper>
