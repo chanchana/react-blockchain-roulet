@@ -20,6 +20,7 @@ function App() {
   const [spinResult, setSpinResult] = useState(0)
   const [reward, setReward] = useState(0)
   const [tokenBalance, setTokenBalance] = useState()
+  const [dealerBalance, setDelaerBalance] = useState()
   const [account, setAccount] = useState()
   const [betAmounts, setBetAmounts] = useState(zeroData())
   const [editingBetAmounts, setEditingBetAmounts] = useState(zeroData())
@@ -76,6 +77,7 @@ function App() {
   }
 
   const updateAccount = () => {
+    updateDealerBalance()
     updateTokenBalance()
     updateBet()
     updateHistory()
@@ -85,6 +87,15 @@ function App() {
     RouletContract.methods.myToken().call({from: account}).then((result) => {
       console.log('call myToken completed')
       setTokenBalance(result)
+    }).catch((error) => {
+      alert(error.message)
+    })
+  }
+
+  const updateDealerBalance = () => {
+    RouletContract.methods.dealerBalance().call({from: account}).then((result) => {
+      console.log('call dealerBalance completed')
+      setDelaerBalance(result)
     }).catch((error) => {
       alert(error.message)
     })
@@ -197,6 +208,51 @@ function App() {
     }
   }
 
+  const handleDealerDeposit = (value) => {
+    RouletContract.methods.dealerDeposit().send({
+      from: account,
+      value: web3.utils.toWei(value.toString(), 'ether'),
+    }).then(() => {
+      console.log('dealer deposit completed')
+      updateDealerBalance()
+    }).catch((error) => {
+      console.log(error.message)
+      alert(error.message)
+    })
+  }
+
+  const handleDealerWithdraw = async (value) => {
+    RouletContract.methods.dealerWithDraw(value).send({
+      from: account,
+    }).then(() => {
+      console.log('dealer withdraw completed')
+      updateDealerBalance()
+    }).catch((error) => {
+      console.log(error.message)
+      alert(error.message)
+    })
+  }
+
+  const handleBeDealer = () => {
+    RouletContract.methods.beDealer().send({from: account}).then(() => {
+      console.log('be dealer completed')
+      updateDealerBalance()
+    }).catch((error) => {
+      console.log(error.message)
+      alert(error.message)
+    })
+  }
+
+  const handleResignFromDealer = () => {
+    RouletContract.methods.dealerResign().send({from: account}).then(() => {
+      console.log('dealer resign completed')
+      updateDealerBalance()
+    }).catch((error) => {
+      console.log(error.message)
+      alert(error.message)
+    })
+  }
+
 
   // const handleRandom = () => {
   //   console.log('rand')
@@ -221,7 +277,7 @@ function App() {
   //   setBuyAmount(e.target.value)
   // }
 
-  const spinBoardProp = { tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken, editingBetAmounts, setEditingBetAmounts, history }
+  const spinBoardProp = { tokenBalance, dealerBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken, editingBetAmounts, setEditingBetAmounts, history, handleBeDealer, handleResignFromDealer, handleDealerDeposit, handleDealerWithdraw }
   const spinResultProp = { spinResultVisible, setSpinResultVisible, spinResult, reward }
 
   return (

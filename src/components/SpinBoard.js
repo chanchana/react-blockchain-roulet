@@ -3,6 +3,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExchangeToken } from './ExchangeToken'
+import { DealerBalanceManagement } from './DealerBalanceManagement'
 import { Wheel } from 'react-custom-roulette'
 
 const dataZero = [
@@ -56,7 +57,7 @@ const popoverStyle = {
 }
 
 
-export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken, editingBetAmounts, setEditingBetAmounts, history }) => {
+export const SpinBoard = ({ tokenBalance, dealerBalance, handleAddBet, handleRemoveBet, betAmounts, setBetAmounts, mustSpin, setMustSpin, spinResult, handleSpin, handleBuyToken, handleSellToken, editingBetAmounts, setEditingBetAmounts, history, handleBeDealer, handleResignFromDealer, handleDealerDeposit, handleDealerWithdraw }) => {
   const [betPopoverOpens, setBetPopoverOpens] = useState(() => [...[...Array(39).keys()].map(_ => null)])
 
   useEffect(() => {
@@ -119,6 +120,8 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
   const betChange = useCallback((index) => editingBetAmounts[index] - betAmounts[index], [editingBetAmounts, betAmounts])
 
   const exchangeTokenProp = { handleBuyToken, handleSellToken, tokenBalance }
+
+  const dealerBalanceProp = { handleBeDealer, handleResignFromDealer, dealerBalance, handleDealerDeposit, handleDealerWithdraw }
 
   return (
     <Box width="100%" padding="1rem" maxWidth="1400px" margin="0 auto">
@@ -183,6 +186,12 @@ export const SpinBoard = ({ tokenBalance, handleAddBet, handleRemoveBet, betAmou
                       Your Token
                       <h1 style={{margin: '0 0 1rem'}}>{tokenBalance}</h1>
                       <ExchangeToken {...exchangeTokenProp} />
+                    </Paper>
+
+                    <Paper style={{background: Color.paperGrey, padding: '1rem', marginTop: '1rem'}}>
+                      Dealer Balance
+                      <h1 style={{margin: '0 0 1rem'}}>{dealerBalance}</h1>
+                      <DealerBalanceManagement {...dealerBalanceProp} />
                     </Paper>
 
                     <Paper style={{background: Color.paperGrey, padding: '1rem', marginTop: '1rem'}}>
