@@ -12,7 +12,7 @@ export const NavBar = ({ accountAddress }) => {
           </IconButton> */}
           <Box fontWeight="bold" >
             <Typography variant="h6" fontWeight="bold" >
-              Rouhee
+              Blockchain Roulet
             </Typography>
           </Box>
           <div style={{marginLeft: 'auto'}}>
