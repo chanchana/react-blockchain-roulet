@@ -95,7 +95,8 @@ function App() {
   const updateDealerBalance = () => {
     RouletContract.methods.dealerBalance().call({from: account}).then((result) => {
       console.log('call dealerBalance completed')
-      setDelaerBalance(result)
+      const balanceEther = web3.utils.fromWei(result.toString(), 'ether')
+      setDelaerBalance(balanceEther)
     }).catch((error) => {
       alert(error.message)
     })

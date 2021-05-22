@@ -66,8 +66,8 @@ export const DealerBalanceManagement = ({ handleDealerDeposit, handleDealerWithd
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleClickOpen} >Dealer Balance Management</Button>
-      <Button variant="contained" color="primary" onClick={handleBeDealer} >Be Dealer</Button>
+      <Button variant="contained" color="primary" onClick={handleClickOpen} style={{marginBottom: '1rem'}}>Dealer Balance Management</Button>
+      <Button variant="contained" color="primary" onClick={handleBeDealer} style={{marginBottom: '1rem'}}>Be Dealer</Button>
       <Button variant="contained" color="primary" onClick={handleResignFromDealer} >Resign from Dealer</Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title" style={{color: '#3f51b5', fontWeight:'bold'}}>Dealer Balance</DialogTitle>
